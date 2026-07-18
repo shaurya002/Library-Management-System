@@ -145,9 +145,6 @@ feature/aop
 feature/documentation
 feature/spring-security
 feature/testing
-feature/docker
-feature/redis
-feature/spring-ai
 ```
 
 ---
