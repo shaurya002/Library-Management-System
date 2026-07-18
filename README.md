@@ -61,7 +61,6 @@ src/main/java/com/project/lms
 ├── aspect
 ├── config
 ├── util
-├── enums
 └── LmsApplication
 ```
 
