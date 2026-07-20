@@ -118,7 +118,7 @@ src/main/java/com/project/lms
 
 - [x] Project Setup
 - [x] Entity Design & Relationships
-- [ ] Repository Layer
+- [x] Repository Layer
 - [ ] Service Layer
 - [ ] REST APIs
 - [ ] Validation
