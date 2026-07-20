@@ -136,14 +136,25 @@ src/main/java/com/project/lms
 main
 
 feature/entities
+
 feature/repositories
+
+feature/dto-mapper
+
 feature/service-layer
+
 feature/rest-api
+
 feature/validation-exception
+
 feature/pagination-search
+
 feature/aop
+
 feature/documentation
+
 feature/spring-security
+
 feature/testing
 ```
 
