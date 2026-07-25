@@ -8,6 +8,7 @@ import com.shaurya.librarymanagementsystem.mapper.BookMapper;
 import com.shaurya.librarymanagementsystem.model.entity.Author;
 import com.shaurya.librarymanagementsystem.model.entity.Book;
 import com.shaurya.librarymanagementsystem.model.enums.BookStatus;
+import com.shaurya.librarymanagementsystem.repositories.AuthorRepository;
 import com.shaurya.librarymanagementsystem.repositories.BookRepository;
 import com.shaurya.librarymanagementsystem.service.BookService;
 import jakarta.transaction.Transactional;
@@ -23,6 +24,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final AuthorRepository authorRepository;
 
     @Override
     @Transactional
