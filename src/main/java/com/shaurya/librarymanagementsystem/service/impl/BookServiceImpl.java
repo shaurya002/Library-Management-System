@@ -3,6 +3,7 @@ package com.shaurya.librarymanagementsystem.service.impl;
 import com.shaurya.librarymanagementsystem.dto.request.BookRequest;
 import com.shaurya.librarymanagementsystem.dto.response.BookResponse;
 import com.shaurya.librarymanagementsystem.exception.AuthorNotFoundException;
+import com.shaurya.librarymanagementsystem.exception.BookNotFoundException;
 import com.shaurya.librarymanagementsystem.exception.DuplicateIsbnException;
 import com.shaurya.librarymanagementsystem.mapper.BookMapper;
 import com.shaurya.librarymanagementsystem.model.entity.Author;
@@ -11,7 +12,7 @@ import com.shaurya.librarymanagementsystem.model.enums.BookStatus;
 import com.shaurya.librarymanagementsystem.repositories.AuthorRepository;
 import com.shaurya.librarymanagementsystem.repositories.BookRepository;
 import com.shaurya.librarymanagementsystem.service.BookService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponse updateBook(Long id, BookRequest request){
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + id));
@@ -91,6 +93,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void deleteBook(Long id){
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
@@ -100,6 +103,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponse getBookById(Long id){
         Book book = bookRepository.findById(id)
                 .orElseThrow(() ->
@@ -109,6 +113,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<BookResponse> findByTitle(String title){
         List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title);
         return books.stream()
@@ -117,6 +122,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<BookResponse> findByAuthors_NameContaining(String authorName){
         List<Book> books = bookRepository.findByAuthors_NameContaining(authorName);
         return books.stream()
@@ -125,6 +131,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<BookResponse> findByPublishedYearBetween(Integer startYear, Integer endYear){
         List<Book> books = bookRepository.findByPublishedYearBetween(startYear,endYear);
         return books.stream()
@@ -133,6 +140,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<BookResponse> findByGenre(String genre) {
         List<Book> books = bookRepository.findByGenre(genre);
         return books.stream()
@@ -141,6 +149,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<BookResponse> findByStatus(BookStatus status) {
         List<Book> books = bookRepository.findByStatus(status);
         return books.stream()
@@ -149,6 +158,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponse findByIsbn(String isbn){
         Book book = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException("Book with ISBN " + isbn + " not found."));
@@ -156,12 +166,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<BookResponse> getAllBooks(){
         List<Book> books = bookRepository.findAll();
         return books.stream()
                 .map(bookMapper::toResponse)
                 .toList();
     }
-
-
 }
