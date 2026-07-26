@@ -4,10 +4,12 @@ import com.shaurya.librarymanagementsystem.model.entity.Book;
 import com.shaurya.librarymanagementsystem.model.entity.BorrowRecord;
 import com.shaurya.librarymanagementsystem.model.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public interface BorrowRepository extends JpaRepository<BorrowRecord, Long> {
 
     List<BorrowRecord> findByMember(Member member);
