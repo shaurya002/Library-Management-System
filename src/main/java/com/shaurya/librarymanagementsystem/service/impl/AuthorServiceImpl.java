@@ -3,6 +3,7 @@ package com.shaurya.librarymanagementsystem.service.impl;
 import com.shaurya.librarymanagementsystem.dto.request.AuthorRequest;
 import com.shaurya.librarymanagementsystem.dto.response.AuthorResponse;
 import com.shaurya.librarymanagementsystem.exception.AuthorNotFoundException;
+import com.shaurya.librarymanagementsystem.exception.DuplicateAuthorException;
 import com.shaurya.librarymanagementsystem.mapper.AuthorMapper;
 import com.shaurya.librarymanagementsystem.model.entity.Author;
 import com.shaurya.librarymanagementsystem.repositories.AuthorRepository;
