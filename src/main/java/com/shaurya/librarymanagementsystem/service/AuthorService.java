@@ -17,5 +17,5 @@ public interface AuthorService {
 
     AuthorResponse getAuthorByName(String name);
 
-    List<AuthorResponse> getAllAuthor();
+    List<AuthorResponse> getAllAuthors();
 }

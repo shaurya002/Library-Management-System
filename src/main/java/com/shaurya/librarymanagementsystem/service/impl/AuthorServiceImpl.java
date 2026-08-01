@@ -89,7 +89,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AuthorResponse> getAllAuthor() {
+    public List<AuthorResponse> getAllAuthors() {
         List<Author> authors = authorRepository.findAll();
         return authors.stream()
                 .map(authorMapper::toResponse)
