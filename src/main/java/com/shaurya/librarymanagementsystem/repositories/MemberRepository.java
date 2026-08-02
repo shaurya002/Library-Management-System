@@ -12,16 +12,16 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member,Long> {
 
-    Optional<Member> findByMemberId(Long memberId);
-
-    List<Member> findByNameContainingIgnoreCase(String memberName);
+    List<Member> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+            String firstName,
+            String lastName
+    );
 
     Optional<Member> findByEmail(String email);
 
     boolean existsByEmail(String email);
 
-    List<Member> findByStatus(MemberStatus memberStatus);
-
+    List<Member> findByMemberStatus(MemberStatus memberStatus);
     List<Member> findByMembershipDateBetween(LocalDate startDate, LocalDate endDate);
 
 }

@@ -25,15 +25,22 @@ public class Member {
 
     @NotBlank(message = "Name is mandatory")
     @Column(nullable = false)
-    private String name;
+    private String firstName;
+
+    @NotBlank(message = "Name is mandatory")
+    @Column(nullable = false)
+    private String lastName;
+
 
     @Email(message = "Email should be valid")
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number is invalid")
+    @Column(nullable = false)
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must contain exactly 10 digits")
     private String phone;
 
+    @Column(nullable = false)
     private LocalDate membershipDate;
 
     @Column(nullable = false)
