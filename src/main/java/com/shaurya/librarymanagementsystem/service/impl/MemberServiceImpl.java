@@ -2,6 +2,8 @@ package com.shaurya.librarymanagementsystem.service.impl;
 
 import com.shaurya.librarymanagementsystem.dto.request.MemberRequest;
 import com.shaurya.librarymanagementsystem.dto.response.MemberResponse;
+import com.shaurya.librarymanagementsystem.exception.DuplicateEmailException;
+import com.shaurya.librarymanagementsystem.exception.MemberNotFoundException;
 import com.shaurya.librarymanagementsystem.mapper.MemberMapper;
 import com.shaurya.librarymanagementsystem.model.entity.Member;
 import com.shaurya.librarymanagementsystem.model.enums.MemberStatus;
