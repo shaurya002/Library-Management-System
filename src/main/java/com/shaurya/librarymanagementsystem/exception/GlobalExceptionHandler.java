@@ -59,4 +59,24 @@ public class GlobalExceptionHandler {
                                         e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateEmailException(DuplicateEmailException e, HttpServletRequest request){
+        ApiErrorResponse response = new ApiErrorResponse(
+                                        LocalDateTime.now(),
+                                        HttpStatus.CONFLICT.value(),
+                                        HttpStatus.CONFLICT.getReasonPhrase(),
+                                        e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleMemberNotFoundException(MemberNotFoundException e, HttpServletRequest request){
+        ApiErrorResponse response = new ApiErrorResponse(
+                                        LocalDateTime.now(),
+                                        HttpStatus.NOT_FOUND.value(),
+                                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                                        e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
 }
