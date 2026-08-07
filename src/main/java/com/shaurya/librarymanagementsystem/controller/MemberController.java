@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,6 +48,17 @@ public class MemberController {
     public ResponseEntity<List<MemberResponse>> getMembersByStatus(@PathVariable MemberStatus memberStatus){
         List<MemberResponse> members = memberService.findByMemberStatus(memberStatus);
         return ResponseEntity.status(HttpStatus.OK).body(members);
+    }
+
+    @GetMapping("/membership-date")
+    public ResponseEntity<List<MemberResponse>> getMembersByMembershipDate(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+
+        List<MemberResponse> members =
+                memberService.findByMembershipDateBetween(startDate, endDate);
+
+        return ResponseEntity.ok(members);
     }
 
     @PutMapping("/{id}")
