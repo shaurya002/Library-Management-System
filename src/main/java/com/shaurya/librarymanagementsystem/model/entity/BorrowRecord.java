@@ -32,11 +32,11 @@ public class BorrowRecord {
     @Enumerated(EnumType.STRING)
     private BorrowStatus borrowStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 }
