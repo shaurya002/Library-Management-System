@@ -2,8 +2,7 @@ package com.shaurya.librarymanagementsystem.service.impl;
 
 import com.shaurya.librarymanagementsystem.dto.request.BorrowRecordRequest;
 import com.shaurya.librarymanagementsystem.dto.response.BorrowRecordResponse;
-import com.shaurya.librarymanagementsystem.exception.BookNotFoundException;
-import com.shaurya.librarymanagementsystem.exception.MemberNotFoundException;
+import com.shaurya.librarymanagementsystem.exception.*;
 import com.shaurya.librarymanagementsystem.mapper.BorrowRecordMapper;
 import com.shaurya.librarymanagementsystem.model.entity.Book;
 import com.shaurya.librarymanagementsystem.model.entity.BorrowRecord;
@@ -87,7 +86,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
         book.setAvailableCopies(book.getAvailableCopies() - 1);
 
         if(book.getAvailableCopies() == 0) {
-            book.setStatus(BookStatus.UNAVAILABLE);
+            book.setStatus(BookStatus.OUT_OF_STOCK);
         }
         BorrowRecord savedRecord = borrowRepository.save(borrowRecord);
         return borrowRecordMapper.toResponse(savedRecord);
