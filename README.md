@@ -119,10 +119,10 @@ src/main/java/com/project/lms
 - [x] Project Setup
 - [x] Entity Design & Relationships
 - [x] Repository Layer
-- [In Progress] Service Layer
-- [In Progress] REST APIs
+- [x] Service Layer
+- [x] REST APIs
 - [In Progress] Validation
-- [In Progress] Global Exception Handling
+- [x] Global Exception Handling
 - [ ] Pagination & Search
 - [ ] AOP Logging
 - [ ] Documentation
