@@ -121,7 +121,7 @@ src/main/java/com/project/lms
 - [x] Repository Layer
 - [x] Service Layer
 - [x] REST APIs
-- [In Progress] Validation
+- [x] Validation
 - [x] Global Exception Handling
 - [ ] Pagination & Search
 - [ ] AOP Logging
