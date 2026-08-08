@@ -22,5 +22,5 @@ public interface BorrowRepository extends JpaRepository<BorrowRecord, Long> {
 
     long countByMemberAndReturnDateIsNull(Member member);
 
-    boolean existsByMemberAndReturnDateIsNull(Member member);
+    boolean existsByMemberAndBookAndReturnDateIsNull(Member member, Book book);
 }
