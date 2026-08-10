@@ -15,6 +15,7 @@ import com.shaurya.librarymanagementsystem.repositories.BorrowRepository;
 import com.shaurya.librarymanagementsystem.repositories.MemberRepository;
 import com.shaurya.librarymanagementsystem.service.BorrowRecordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -180,7 +181,7 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
     @Override
     @Transactional(readOnly = true)
     public List<BorrowRecordResponse> getAllBorrowRecords() {
-        List<BorrowRecord> borrowRecords = borrowRepository.findAll();
+        List<BorrowRecord> borrowRecords = borrowRepository.findAll(Sort.by(Sort.Order.desc("borrowDate")));
         return borrowRecords.stream()
                 .map(borrowRecordMapper:: toResponse)
                 .toList();

@@ -10,6 +10,7 @@ import com.shaurya.librarymanagementsystem.model.entity.Author;
 import com.shaurya.librarymanagementsystem.repositories.AuthorRepository;
 import com.shaurya.librarymanagementsystem.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,7 +91,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional(readOnly = true)
     public List<AuthorResponse> getAllAuthors() {
-        List<Author> authors = authorRepository.findAll();
+        List<Author> authors = authorRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
         return authors.stream()
                 .map(authorMapper::toResponse)
                 .collect(Collectors.toList());
