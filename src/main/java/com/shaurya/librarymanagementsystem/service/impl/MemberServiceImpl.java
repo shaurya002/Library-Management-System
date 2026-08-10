@@ -11,6 +11,7 @@ import com.shaurya.librarymanagementsystem.model.enums.MemberStatus;
 import com.shaurya.librarymanagementsystem.repositories.MemberRepository;
 import com.shaurya.librarymanagementsystem.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public List<MemberResponse> getAllMembers(){
-        List<Member> members = memberRepository.findAll();
+        List<Member> members = memberRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName"));
         return members.stream().map(memberMapper::toResponse).toList();
     }
 
