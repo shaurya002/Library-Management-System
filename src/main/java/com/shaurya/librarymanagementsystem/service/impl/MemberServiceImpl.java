@@ -2,6 +2,7 @@ package com.shaurya.librarymanagementsystem.service.impl;
 
 import com.shaurya.librarymanagementsystem.dto.request.MemberRequest;
 import com.shaurya.librarymanagementsystem.dto.response.MemberResponse;
+import com.shaurya.librarymanagementsystem.dto.response.PageResponse;
 import com.shaurya.librarymanagementsystem.exception.DuplicateEmailException;
 import com.shaurya.librarymanagementsystem.exception.InvalidMembershipDateRangeException;
 import com.shaurya.librarymanagementsystem.exception.MemberNotFoundException;
@@ -11,6 +12,9 @@ import com.shaurya.librarymanagementsystem.model.enums.MemberStatus;
 import com.shaurya.librarymanagementsystem.repositories.MemberRepository;
 import com.shaurya.librarymanagementsystem.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +28,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
+
+    private final int pageSize = 7;
 
     @Override
     @Transactional
@@ -90,21 +96,41 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MemberResponse> getAllMembers(){
-        List<Member> members = memberRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName"));
-        return members.stream().map(memberMapper::toResponse).toList();
+    public PageResponse<MemberResponse> getAllMembers(int page){
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "firstName"));
+        Page<Member> memberPage = memberRepository.findAll(pageable);
+        List<MemberResponse> members = memberPage.getContent().stream().map(memberMapper::toResponse).toList();
+        return new PageResponse<>(
+                members,
+                memberPage.getNumber(),
+                memberPage.getSize(),
+                memberPage.getTotalElements(),
+                memberPage.getTotalPages(),
+                memberPage.isFirst(),
+                memberPage.isLast()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<MemberResponse> findByMemberStatus(MemberStatus memberStatus){
-        List<Member> members = memberRepository.findByMemberStatus(memberStatus);
-        return members.stream().map(memberMapper::toResponse).toList();
+    public PageResponse<MemberResponse> findByMemberStatus(MemberStatus memberStatus, int page){
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "firstName"));
+        Page<Member> memberPage = memberRepository.findByMemberStatus(memberStatus, pageable);
+        List<MemberResponse> members = memberPage.getContent().stream().map(memberMapper::toResponse).toList();
+        return new PageResponse<>(
+                members,
+                memberPage.getNumber(),
+                memberPage.getSize(),
+                memberPage.getTotalElements(),
+                memberPage.getTotalPages(),
+                memberPage.isFirst(),
+                memberPage.isLast()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<MemberResponse> findByMembershipDateBetween(LocalDate startDate, LocalDate endDate){
+    public PageResponse<MemberResponse> findByMembershipDateBetween(LocalDate startDate, LocalDate endDate, int page){
         LocalDate currentDate = LocalDate.now();
         if(startDate.isAfter(endDate)){
             throw new InvalidMembershipDateRangeException(
@@ -117,7 +143,44 @@ public class MemberServiceImpl implements MemberService {
             );
         }
 
-        List<Member> members = memberRepository.findByMembershipDateBetween(startDate, endDate);
-        return members.stream().map(memberMapper::toResponse).toList();
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "firstName"));
+        Page<Member> memberPage = memberRepository.findByMembershipDateBetween(startDate, endDate, pageable);
+        List<MemberResponse> members = memberPage.getContent().stream().map(memberMapper::toResponse).toList();
+        return new PageResponse<>(
+                members,
+                memberPage.getNumber(),
+                memberPage.getSize(),
+                memberPage.getTotalElements(),
+                memberPage.getTotalPages(),
+                memberPage.isFirst(),
+                memberPage.isLast()
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<MemberResponse> findByName(String name, int page) {
+
+        Pageable pageable =
+                PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "firstName"));
+
+        Page<Member> memberPage =
+                memberRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name, pageable);
+
+        List<MemberResponse> members =
+                memberPage.getContent()
+                        .stream()
+                        .map(memberMapper::toResponse)
+                        .toList();
+
+        return new PageResponse<>(
+                members,
+                memberPage.getNumber(),
+                memberPage.getSize(),
+                memberPage.getTotalElements(),
+                memberPage.getTotalPages(),
+                memberPage.isFirst(),
+                memberPage.isLast()
+        );
     }
 }
