@@ -2,6 +2,7 @@ package com.shaurya.librarymanagementsystem.service;
 
 import com.shaurya.librarymanagementsystem.dto.request.BookRequest;
 import com.shaurya.librarymanagementsystem.dto.response.BookResponse;
+import com.shaurya.librarymanagementsystem.dto.response.PageResponse;
 import com.shaurya.librarymanagementsystem.model.enums.BookStatus;
 
 import java.util.List;
@@ -12,12 +13,12 @@ public interface BookService {
     BookResponse updateBook(Long id, BookRequest request);
     void deleteBook(Long id);
     BookResponse getBookById(Long id);
-    List<BookResponse> findByTitle(String title);
-    List<BookResponse> findByPublishedYearBetween(Integer startYear, Integer endYear);
-    List<BookResponse> findByAuthors_NameContaining(String authorName);
-    List<BookResponse> findByGenre(String genre);
-    List<BookResponse> findByStatus(BookStatus status);
+    PageResponse<BookResponse> findByTitle(String title, int page);
+    PageResponse<BookResponse> findByPublishedYearBetween(int page, Integer startYear, Integer endYear);
+    PageResponse<BookResponse> findByAuthors_NameContaining(int page, String authorName);
+    PageResponse<BookResponse> findByGenre(int page, String genre);
+    PageResponse<BookResponse> findByStatus(BookStatus status, int page);
     BookResponse findByIsbn(String isbn);
-    List<BookResponse> getAllBooks();
+    PageResponse<BookResponse> getAllBooks(int page);
 
 }

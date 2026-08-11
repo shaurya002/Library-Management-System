@@ -2,6 +2,7 @@ package com.shaurya.librarymanagementsystem.service.impl;
 
 import com.shaurya.librarymanagementsystem.dto.request.BookRequest;
 import com.shaurya.librarymanagementsystem.dto.response.BookResponse;
+import com.shaurya.librarymanagementsystem.dto.response.PageResponse;
 import com.shaurya.librarymanagementsystem.exception.AuthorNotFoundException;
 import com.shaurya.librarymanagementsystem.exception.BookNotFoundException;
 import com.shaurya.librarymanagementsystem.exception.DuplicateIsbnException;
@@ -12,6 +13,9 @@ import com.shaurya.librarymanagementsystem.model.enums.BookStatus;
 import com.shaurya.librarymanagementsystem.repositories.AuthorRepository;
 import com.shaurya.librarymanagementsystem.repositories.BookRepository;
 import com.shaurya.librarymanagementsystem.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,8 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final AuthorRepository authorRepository;
+
+    private final int pageSize = 7; // Default page size
 
     @Override
     @Transactional
@@ -115,47 +121,87 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookResponse> findByTitle(String title){
-        List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title);
-        return books.stream()
-                .map(bookMapper::toResponse)
-                .toList();
+    public PageResponse<BookResponse> findByTitle(String title, int page){
+        Pageable pageable = PageRequest.of(page,pageSize, Sort.by("title").ascending());
+        Page<Book> books = bookRepository.findByTitleContainingIgnoreCase(title,pageable);
+        Page<BookResponse> response = books.map(bookMapper::toResponse);
+        return new PageResponse<>(
+                response.getContent(),
+                response.getNumber(),
+                response.getSize(),
+                response.getTotalElements(),
+                response.getTotalPages(),
+                response.isFirst(),
+                response.isLast()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookResponse> findByAuthors_NameContaining(String authorName){
-        List<Book> books = bookRepository.findByAuthors_NameContaining(authorName);
-        return books.stream()
-                .map(bookMapper::toResponse)
-                .toList();
+    public PageResponse<BookResponse> findByAuthors_NameContaining(int page, String authorName){
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("title").ascending());
+        Page<Book> books = bookRepository.findByAuthors_NameContaining(authorName,pageable);
+        Page<BookResponse> response = books.map(bookMapper::toResponse);
+        return new PageResponse<>(
+                response.getContent(),
+                response.getNumber(),
+                response.getSize(),
+                response.getTotalElements(),
+                response.getTotalPages(),
+                response.isFirst(),
+                response.isLast()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookResponse> findByPublishedYearBetween(Integer startYear, Integer endYear){
-        List<Book> books = bookRepository.findByPublishedYearBetween(startYear,endYear);
-        return books.stream()
-                .map(bookMapper::toResponse)
-                .toList();
+    public PageResponse<BookResponse> findByPublishedYearBetween(int page, Integer startYear, Integer endYear){
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("title").ascending());
+        Page<Book> books = bookRepository.findByPublishedYearBetween(startYear, endYear, pageable);
+        Page<BookResponse> response = books.map(bookMapper::toResponse);
+        return new PageResponse<>(
+                response.getContent(),
+                response.getNumber(),
+                response.getSize(),
+                response.getTotalElements(),
+                response.getTotalPages(),
+                response.isFirst(),
+                response.isLast()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookResponse> findByGenre(String genre) {
-        List<Book> books = bookRepository.findByGenre(genre);
-        return books.stream()
-                .map(bookMapper::toResponse)
-                .toList();
+    public PageResponse<BookResponse> findByGenre(int page, String genre) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("title").ascending());
+        Page<Book> books = bookRepository.findByGenre(genre, pageable);
+        Page<BookResponse> response = books.map(bookMapper::toResponse);
+        return new PageResponse<>(
+                response.getContent(),
+                response.getNumber(),
+                response.getSize(),
+                response.getTotalElements(),
+                response.getTotalPages(),
+                response.isFirst(),
+                response.isLast()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookResponse> findByStatus(BookStatus status) {
-        List<Book> books = bookRepository.findByStatus(status);
-        return books.stream()
-                .map(bookMapper::toResponse)
-                .toList();
+    public PageResponse<BookResponse> findByStatus(BookStatus status, int page) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("title").ascending());
+        Page<Book> books = bookRepository.findByStatus(status, pageable);
+        Page<BookResponse> response = books.map(bookMapper::toResponse);
+        return new PageResponse<>(
+                response.getContent(),
+                response.getNumber(),
+                response.getSize(),
+                response.getTotalElements(),
+                response.getTotalPages(),
+                response.isFirst(),
+                response.isLast()
+        );
     }
 
     @Override
@@ -168,10 +214,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookResponse> getAllBooks(){
-        List<Book> books = bookRepository.findAll(Sort.by(Sort.Direction.ASC, "title"));
-        return books.stream()
-                .map(bookMapper::toResponse)
-                .toList();
+    public PageResponse<BookResponse> getAllBooks(int page){
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("title").ascending());
+        Page<Book> books = bookRepository.findAll(pageable);
+        Page<BookResponse> response = books.map(bookMapper::toResponse);
+        return new PageResponse<>(
+                response.getContent(),
+                response.getNumber(),
+                response.getSize(),
+                response.getTotalElements(),
+                response.getTotalPages(),
+                response.isFirst(),
+                response.isLast()
+        );
     }
 }
