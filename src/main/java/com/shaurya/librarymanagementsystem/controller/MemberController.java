@@ -2,6 +2,7 @@ package com.shaurya.librarymanagementsystem.controller;
 
 import com.shaurya.librarymanagementsystem.dto.request.MemberRequest;
 import com.shaurya.librarymanagementsystem.dto.response.MemberResponse;
+import com.shaurya.librarymanagementsystem.dto.response.PageResponse;
 import com.shaurya.librarymanagementsystem.model.enums.MemberStatus;
 import com.shaurya.librarymanagementsystem.service.MemberService;
 import jakarta.validation.Valid;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,9 +27,9 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberResponse>> getAllMembers(){
-        List<MemberResponse> memberResponseList = memberService.getAllMembers();
-        return ResponseEntity.status(HttpStatus.OK).body(memberResponseList);
+    public ResponseEntity<PageResponse<MemberResponse>> getAllMembers(@RequestParam(defaultValue = "0") int page){
+        PageResponse<MemberResponse> memberResponsePage = memberService.getAllMembers(page);
+        return ResponseEntity.status(HttpStatus.OK).body(memberResponsePage);
     }
 
     @GetMapping("/{id}")
@@ -44,19 +44,20 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(member);
     }
 
-    @GetMapping("/status/{memberStatus}")
-    public ResponseEntity<List<MemberResponse>> getMembersByStatus(@PathVariable MemberStatus memberStatus){
-        List<MemberResponse> members = memberService.findByMemberStatus(memberStatus);
+    @GetMapping("/status")
+    public ResponseEntity<PageResponse<MemberResponse>> getMembersByStatus(@RequestParam MemberStatus memberStatus, @RequestParam(defaultValue = "0") int page){
+        PageResponse<MemberResponse> members = memberService.findByMemberStatus(memberStatus, page);
         return ResponseEntity.status(HttpStatus.OK).body(members);
     }
 
     @GetMapping("/membership-date")
-    public ResponseEntity<List<MemberResponse>> getMembersByMembershipDate(
+    public ResponseEntity<PageResponse<MemberResponse>> getMembersByMembershipDate(
             @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
+            @RequestParam LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page) {
 
-        List<MemberResponse> members =
-                memberService.findByMembershipDateBetween(startDate, endDate);
+        PageResponse<MemberResponse> members =
+                memberService.findByMembershipDateBetween(startDate, endDate, page);
 
         return ResponseEntity.ok(members);
     }
@@ -71,6 +72,17 @@ public class MemberController {
     public ResponseEntity<Void> deleteMember(@PathVariable Long id){
         memberService.deleteMember(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<MemberResponse>> findByName(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page) {
+
+        PageResponse<MemberResponse> response =
+                memberService.findByName(name, page);
+
+        return ResponseEntity.ok(response);
     }
 }
 
