@@ -2,8 +2,7 @@ package com.shaurya.librarymanagementsystem.service;
 
 import com.shaurya.librarymanagementsystem.dto.request.AuthorRequest;
 import com.shaurya.librarymanagementsystem.dto.response.AuthorResponse;
-
-import java.util.List;
+import com.shaurya.librarymanagementsystem.dto.response.PageResponse;
 
 public interface AuthorService {
 
@@ -15,7 +14,7 @@ public interface AuthorService {
 
     AuthorResponse getAuthorById(Long id);
 
-    AuthorResponse getAuthorByName(String name);
+    PageResponse<AuthorResponse> findByName(String name, int page);
 
-    List<AuthorResponse> getAllAuthors();
+    PageResponse<AuthorResponse> getAllAuthors(int page);
 }
