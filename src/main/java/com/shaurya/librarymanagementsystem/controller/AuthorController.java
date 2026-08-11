@@ -2,6 +2,7 @@ package com.shaurya.librarymanagementsystem.controller;
 
 import com.shaurya.librarymanagementsystem.dto.request.AuthorRequest;
 import com.shaurya.librarymanagementsystem.dto.response.AuthorResponse;
+import com.shaurya.librarymanagementsystem.dto.response.PageResponse;
 import com.shaurya.librarymanagementsystem.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,15 +40,15 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<AuthorResponse> getAuthorByName(@PathVariable String name){
-        AuthorResponse authorResponse = authorService.getAuthorByName(name);
-        return ResponseEntity.status(HttpStatus.OK).body(authorResponse);
+    @GetMapping("/name")
+    public ResponseEntity<PageResponse<AuthorResponse>> findAuthorsByName(@RequestParam String name, @RequestParam(defaultValue = "0") int page){
+        PageResponse<AuthorResponse> authorResponses = authorService.findByName(name, page);
+        return ResponseEntity.status(HttpStatus.OK).body(authorResponses);
     }
 
     @GetMapping
-    public ResponseEntity<List<AuthorResponse>> getAllAuthors(){
-        List<AuthorResponse> authorResponses = authorService.getAllAuthors();
+    public ResponseEntity<PageResponse<AuthorResponse>> getAllAuthors(@RequestParam(defaultValue = "0") int page){
+        PageResponse<AuthorResponse> authorResponses = authorService.getAllAuthors(page);
         return ResponseEntity.status(HttpStatus.OK).body(authorResponses);
     }
 }

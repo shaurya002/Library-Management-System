@@ -2,6 +2,7 @@ package com.shaurya.librarymanagementsystem.service.impl;
 
 import com.shaurya.librarymanagementsystem.dto.request.AuthorRequest;
 import com.shaurya.librarymanagementsystem.dto.response.AuthorResponse;
+import com.shaurya.librarymanagementsystem.dto.response.PageResponse;
 import com.shaurya.librarymanagementsystem.exception.AuthorDeletionException;
 import com.shaurya.librarymanagementsystem.exception.AuthorNotFoundException;
 import com.shaurya.librarymanagementsystem.exception.DuplicateAuthorException;
@@ -10,6 +11,9 @@ import com.shaurya.librarymanagementsystem.model.entity.Author;
 import com.shaurya.librarymanagementsystem.repositories.AuthorRepository;
 import com.shaurya.librarymanagementsystem.service.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
+
+    private final int pageSize = 7; // Default page size
 
     @Override
     @Transactional
@@ -78,22 +84,42 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional(readOnly = true)
-    public AuthorResponse getAuthorByName(String name) {
-        Author author = authorRepository.findByName(name)
-                .orElseThrow(() ->
-                        new AuthorNotFoundException(
-                                "Author with name '" + name + "' not found."
-                        ));
+    public PageResponse<AuthorResponse> findByName(String name, int page) {
 
-        return authorMapper.toResponse(author);
+        Pageable pageable =
+                PageRequest.of(page, pageSize, Sort.by("name").ascending());
+
+        Page<Author> authors =
+                authorRepository.findByNameContainingIgnoreCase(name, pageable);
+
+        Page<AuthorResponse> response =
+                authors.map(authorMapper::toResponse);
+
+        return new PageResponse<>(
+                response.getContent(),
+                response.getNumber(),
+                response.getSize(),
+                response.getTotalElements(),
+                response.getTotalPages(),
+                response.isFirst(),
+                response.isLast()
+        );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<AuthorResponse> getAllAuthors() {
-        List<Author> authors = authorRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
-        return authors.stream()
-                .map(authorMapper::toResponse)
-                .collect(Collectors.toList());
+    public PageResponse<AuthorResponse> getAllAuthors(int page) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("name").ascending());
+        Page<Author> authorPage = authorRepository.findAll(pageable);
+        Page<AuthorResponse> responsePage = authorPage.map(authorMapper::toResponse);
+        return new PageResponse<>(
+                responsePage.getContent(),
+                responsePage.getNumber(),
+                responsePage.getSize(),
+                responsePage.getTotalElements(),
+                responsePage.getTotalPages(),
+                responsePage.isFirst(),
+                responsePage.isLast()
+        );
     }
 }
