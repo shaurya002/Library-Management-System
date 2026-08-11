@@ -123,7 +123,7 @@ src/main/java/com/project/lms
 - [x] REST APIs
 - [x] Validation
 - [x] Global Exception Handling
-- [In Progress] Pagination & Search
+- [x] Pagination & Search
 - [ ] AOP Logging
 - [ ] Documentation
 - [ ] Spring Security
