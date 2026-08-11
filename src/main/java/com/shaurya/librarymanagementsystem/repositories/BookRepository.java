@@ -2,6 +2,8 @@ package com.shaurya.librarymanagementsystem.repositories;
 
 import com.shaurya.librarymanagementsystem.model.entity.Book;
 import com.shaurya.librarymanagementsystem.model.enums.BookStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,15 +15,18 @@ public interface BookRepository extends JpaRepository<Book,Long> {
 
     Optional<Book> findByIsbn(String isbn);
 
-    List<Book> findByTitleContainingIgnoreCase(String title);
+    Page<Book> findByTitleContainingIgnoreCase(
+            String title,
+            Pageable pageable
+    );
 
-    List <Book> findByGenre(String genre);
+    Page<Book> findByGenre(String genre, Pageable pageable);
 
-    List<Book> findByStatus(BookStatus status);
+    Page<Book> findByStatus(BookStatus status, Pageable pageable);
 
     boolean existsByIsbn(String isbn);
 
-    List<Book> findByAuthors_NameContaining(String name);
+    Page<Book> findByAuthors_NameContaining(String name, Pageable pageable);
 
-    List<Book> findByPublishedYearBetween(Integer startYear, Integer endYear);
+    Page<Book> findByPublishedYearBetween(Integer startYear, Integer endYear, Pageable pageable);
 }
