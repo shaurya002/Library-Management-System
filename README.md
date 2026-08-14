@@ -125,8 +125,8 @@ src/main/java/com/project/lms
 - [x] Global Exception Handling
 - [x] Pagination & Search
 - [x] AOP Logging
-- [In Progress] Documentation
-- [ ] Spring Security
+- [x] Documentation
+- [In Progress] Spring Security
 - [ ] Testing
 ---
 
