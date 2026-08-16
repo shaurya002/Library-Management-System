@@ -21,6 +21,7 @@ public record MemberRequest(
                 regexp = "^[0-9]{10}$",
                 message = "Phone number must contain exactly 10 digits"
         )
-        String phone
+        String phone,
+        String password
 ) {
 }

@@ -26,4 +26,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToOne
+    @JoinColumn(name = "member_id", unique = true)
+    private Member member;
 }

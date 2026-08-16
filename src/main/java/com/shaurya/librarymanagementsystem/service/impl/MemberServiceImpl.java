@@ -8,14 +8,18 @@ import com.shaurya.librarymanagementsystem.exception.InvalidMembershipDateRangeE
 import com.shaurya.librarymanagementsystem.exception.MemberNotFoundException;
 import com.shaurya.librarymanagementsystem.mapper.MemberMapper;
 import com.shaurya.librarymanagementsystem.model.entity.Member;
+import com.shaurya.librarymanagementsystem.model.entity.User;
 import com.shaurya.librarymanagementsystem.model.enums.MemberStatus;
+import com.shaurya.librarymanagementsystem.model.enums.Role;
 import com.shaurya.librarymanagementsystem.repositories.MemberRepository;
+import com.shaurya.librarymanagementsystem.repositories.UserRepository;
 import com.shaurya.librarymanagementsystem.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final int pageSize = 7;
 
@@ -39,12 +45,26 @@ public class MemberServiceImpl implements MemberService {
                     "Member with email '" + request.email() + "' already exists."
             );
         }
+        if (userRepository.existsByUsername(request.email())) {
+            throw new DuplicateEmailException(
+                    "User with username '" + request.email() + "' already exists."
+            );
+        }
         Member member = memberMapper.toEntity(request);
 
         member.setMembershipDate(LocalDate.now());
         member.setMemberStatus(MemberStatus.ACTIVE);
 
         Member savedMember = memberRepository.save(member);
+
+        User user = User.builder()
+                .username(savedMember.getEmail())
+                .password(passwordEncoder.encode(request.password()))
+                .role(Role.MEMBER)
+                .member(savedMember)
+                .build();
+
+        userRepository.save(user);
         return memberMapper.toResponse(savedMember);
     }
 
@@ -54,8 +74,10 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("Member by id " + id + " not found"));
 
-        if(!member.getEmail().equals(request.email())
-                && memberRepository.existsByEmail(request.email())){
+        String oldEmail = member.getEmail();
+        if (!oldEmail.equals(request.email())
+                && memberRepository.existsByEmail(request.email())) {
+
             throw new DuplicateEmailException(
                     "Member with email '" + request.email() + "' already exists."
             );
@@ -66,16 +88,28 @@ public class MemberServiceImpl implements MemberService {
         member.setEmail(request.email());
         member.setPhone(request.phone());
 
+        if (!oldEmail.equals(request.email())) {
+            User user = member.getUser();
+            if (user != null) {
+                user.setUsername(request.email());
+            }
+        }
+
         Member updatedMember = memberRepository.save(member);
+
         return memberMapper.toResponse(updatedMember);
     }
 
 
     @Override
     @Transactional
-    public void deleteMember(Long id){
+    public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new MemberNotFoundException("Member by id " + id + " not found"));
+
+        if (member.getUser() != null) {
+            userRepository.delete(member.getUser());
+        }
         memberRepository.delete(member);
     }
 
