@@ -16,7 +16,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"borrowRecords"})
+@EqualsAndHashCode(exclude = {"borrowRecords", "user"})
+@ToString(exclude = {"user", "borrowRecords"})
 public class Member {
 
     @Id
@@ -30,7 +31,6 @@ public class Member {
     @NotBlank(message = "Name is mandatory")
     @Column(nullable = false)
     private String lastName;
-
 
     @Email(message = "Email should be valid")
     @Column(nullable = false, unique = true)
@@ -46,6 +46,9 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus;
+
+    @OneToOne(mappedBy = "member")
+    private User user;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
