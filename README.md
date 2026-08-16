@@ -126,8 +126,8 @@ src/main/java/com/project/lms
 - [x] Pagination & Search
 - [x] AOP Logging
 - [x] Documentation
-- [In Progress] Spring Security
-- [ ] Testing
+- [x] Spring Security
+- [In Progress] Testing
 ---
 
 ## 🌿 Git Branch Strategy
